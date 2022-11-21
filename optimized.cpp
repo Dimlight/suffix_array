@@ -34,8 +34,9 @@ using namespace std;
 #define MAXL 26
  
 int Case, n, pos, m, suffix[MAXN], tmp[MAXN], sum[MAXN], Count[MAXN], Rank[MAXL][MAXN];
-char input[MAXN], temp[MAXN], pat[MAXN], reversest[MAXN][MAXN];
-int occurences[MAXN], revoccurences[MAXN];
+char input[MAXN], temp[MAXN], pat[MAXN];
+int occurences[MAXN],revoccurences[MAXN]; 
+
 
 string patterns[MAXN]; 
 
@@ -141,16 +142,16 @@ void printsuffix(char *txt, int *suffArr, int n)
         //freq[st]++;
     }
 }
-char* reverse(char *str) {                       // defining the function
-    static int i = 0;
-    static char rev[100];
-    if(*str)
-    {
-    reverse(str+1);
-    rev[i++] = *str;
-    }
-    return rev;
-}
+// char* reverse(char *str) {                       // defining the function
+//     static int i = 0;
+//     static char rev[100];
+//     if(*str)
+//     {
+//     reverse(str+1);
+//     rev[i++] = *str;
+//     }
+//     return rev;
+// }
 
 
 int suffixArraySearch(char *txt,int *suffix, const char *substring, int n)
@@ -169,9 +170,11 @@ int suffixArraySearch(char *txt,int *suffix, const char *substring, int n)
 
     while(lo + 1 < hi) {
         mid = (lo+hi)/2;
-        cmp = strncmp(txt+ suffix[mid], substring, len);
-
+        cmp = strncmp(txt + suffix[mid], substring, len);
+        
+        //printf("")
         if(cmp == 0) {
+            printf("matched text: %s\n", txt + suffix[mid]);
             /* we have a winner */
             /* search backwards and forwards for first and last */
             for(lo = mid; lo > 0 && strncmp(txt + suffix[lo-1], substring, len) == 0; lo--);
@@ -186,6 +189,12 @@ int suffixArraySearch(char *txt,int *suffix, const char *substring, int n)
     }
 
     return 0;
+}
+
+string reversestr(string str)
+{
+    for (int i = str.length() - 1; i >= 0; i--)
+        cout << str[i];
 }
 
 
@@ -203,67 +212,37 @@ int main()
     
     n = strlen(input); 
     
-    int npat;
-    cin >> npat; 
-
     // compute the suffix tree 
     sortSuffixes();
-    // print the suffix tree; 
-    // printsuffix(input, suffix,n);
+
+    int npat;
+    cin >> npat; 
 
     REP(j,npat)
     {
         cin >> patterns[j];
         strcpy(pat, patterns[j].c_str());
         occurences[j] = suffixArraySearch(input,suffix,pat,n);
-        // save the reverstring
+        reverse(patterns[j].begin(),patterns[j].end());
         
-        //strcpy(reversest[j],reverse(pat));
         printf("pattern: %s: -> %d\n",pat,occurences[j]);
     }
+    string st = input;
 
-    // strcpy(input,reverse(input));
+    reverse(st.begin(),st.end());
 
-    // // compute the suffix tree 
-    // sortSuffixes();
-    
-    // REP(j,npat)
-    // {
-    //     strcpy(pat, reversest[j]);
-    //     revoccurences[j] = suffixArraySearch(input,suffix,pat,n);
+    strcpy(input,st.c_str());
+
+    sortSuffixes();
+
+    REP(j,npat)
+    {
+        strcpy(pat, patterns[j].c_str());
+        revoccurences[j] = suffixArraySearch(input,suffix,pat,n);
         
-    //     printf("pattern: %s: -> %d\n",pat,revoccurences[j]);
-    // }
+        printf("pattern: %s: -> %d\n",pat,revoccurences[j]);
+    }   
     
-    // int res = 0;
-    
-    // for(int i=0,j=npat-1; i<npat ; i++,j--)
-    // {
-    //     res+= occurences[i]*revoccurences[j];
-    // }
 
-    // printf("%d\n",res);
-
-    // compute the suffix tree 
-    // sortSuffixes();
-    // print the suffix tree; 
-    // printsuffix(input, suffix,n);
-    //int res = 0; 
-    // REP(l,npat)
-    // {
-    //     REP(k,npat)
-    //     {
-    //         //cout << pat[l] + pat[k] << endl; 
-    //         string subst = patterns[l] + patterns[k];
-    //         strcpy(pat, subst.c_str());
-    //         int tempres = suffixArraySearch(input,suffix,pat,n);
-    //         res+=tempres;
-    //     }
-    // }
-
-    //printf("%d\n", res);
-    //}
-    
-    
     return 0;
 }
