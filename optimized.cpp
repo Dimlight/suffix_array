@@ -243,6 +243,6 @@ int main()
         printf("pattern: %s: -> %d\n",pat,revoccurences[j]);
     }   
     
-
+    print("something I changed");
     return 0;
 }
